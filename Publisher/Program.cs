@@ -10,6 +10,10 @@ using IConnection connection = await connectionFactory.CreateConnectionAsync();
 using IChannel channel = await connection.CreateChannelAsync();
 
 //Create a queue
+//Durable: false means that the queue will not be durable and will not be saved to disk
+//Durable: true means that the queue will be durable and will be saved to disk
+//If durable parameter is true then you have to create properties and change the persistent parameter to true
+//Also use in BasicPublish method
 await channel.QueueDeclareAsync(queue: "example-queue", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
 //Sending a message
