@@ -144,4 +144,12 @@ await channel.BasicPublishAsync(exchange: "", routingKey: "example-queue", body:
 ---
 
 > 🔀 **Recommendation**: If you require message persistence and your system does not have extremely high traffic, prefer using the synchronous API (`IModel`). The async API is better suited for high-performance scenarios but introduces complexity when handling message durability.
+> 
+⚖️ Fair Dispatch
 
+Fair dispatch ensures that no single consumer is overloaded while others remain idle.
+This is achieved by setting the prefetch count to 1 using the channel’s QoS (Quality of Service) settings. It tells RabbitMQ not to give more than one message to a worker at a time until it has acknowledged the previous one.
+
+channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+
+This makes sure that long-running tasks do not prevent other consumers from getting work and helps balance the load more fairly.
