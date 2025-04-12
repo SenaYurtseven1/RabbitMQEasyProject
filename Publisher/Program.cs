@@ -28,17 +28,29 @@ using IChannel channel = await connection.CreateChannelAsync();
 
 //}
 
+#region DirectExchange
+////Direct exchange -- not use queue
+////Create a exchange
+//await channel.ExchangeDeclareAsync(exchange: "direct-example-exchange", type: ExchangeType.Direct, durable: false, autoDelete: false, arguments: null);
 
-//Direct exchange -- not use queue
-//Create a exchange
-await channel.ExchangeDeclareAsync(exchange: "direct-example-exchange", type: ExchangeType.Direct, durable: false, autoDelete: false, arguments: null);
+
+//Console.Write("Message : ");
+//string message = Console.ReadLine();
+//byte[] body = Encoding.UTF8.GetBytes(message);
+
+//await channel.BasicPublishAsync(exchange: "direct-example-exchange", routingKey: "direct-queue-example", body: body);
 
 
-    Console.Write("Message : ");
-    string message = Console.ReadLine();
-    byte[] body = Encoding.UTF8.GetBytes(message);
+#endregion
 
-    await channel.BasicPublishAsync(exchange: "direct-example-exchange", routingKey: "direct-queue-example", body: body);
-
+#region FanoutExchange
+//await channel.ExchangeDeclareAsync(exchange: "fanout-example-exchange", type: ExchangeType.Fanout, durable: false, autoDelete: false, arguments: null);
+//for (int i = 0; i < 100; i++)
+//{
+//    await Task.Delay(200);
+//    byte [] message = Encoding.UTF8.GetBytes("Hello " + i);
+//    await channel.BasicPublishAsync(exchange: "fanout-example-exchange", routingKey: "", body: message);
+//}
+#endregion
 
 Console.Read();

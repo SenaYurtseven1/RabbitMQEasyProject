@@ -34,27 +34,53 @@ using IChannel channel = await connection.CreateChannelAsync();
 //    //await channel.BasicAckAsync(ea.DeliveryTag, multiple: false);
 //};
 
-//Direct exchange 
-//Same name with publisher exchange
-await channel.ExchangeDeclareAsync(exchange: "direct-example-exchange", type: ExchangeType.Direct, durable: false, autoDelete: false, arguments: null);
+#region Direct Exchange
+////Direct exchange 
+////Same name with publisher exchange
+//await channel.ExchangeDeclareAsync(exchange: "direct-example-exchange", type: ExchangeType.Direct, durable: false, autoDelete: false, arguments: null);
 
-//Create a queue which is same name with publisher queue
-string queueName = (await channel.QueueDeclareAsync()).QueueName;
+////Create a queue which is same name with publisher queue
+//string queueName = (await channel.QueueDeclareAsync()).QueueName;
 
-//Bind the queue to the exchange
-await channel.QueueBindAsync(queue: queueName, exchange: "direct-example-exchange", routingKey: "direct-queue-example");
+////Bind the queue to the exchange
+//await channel.QueueBindAsync(queue: queueName, exchange: "direct-example-exchange", routingKey: "direct-queue-example");
 
-//Recieve a message
-AsyncEventingBasicConsumer consumer = new(channel); 
-await channel.BasicConsumeAsync(queue: queueName, autoAck: true, consumer: consumer);
-consumer.ReceivedAsync += async (sender, ea) =>
-{
-    //The place that the message is received and processed
-    //e.Body: the all arguments in message that is being processed
-    //e.Body.Span or e.Body.ToArray(): the byte message that is being processed in
-    byte[] body = ea.Body.ToArray();
-    string message = System.Text.Encoding.UTF8.GetString(body);
-    Console.WriteLine($"Received message: {message}");
-};  
+////Recieve a message
+//AsyncEventingBasicConsumer consumer = new(channel); 
+//await channel.BasicConsumeAsync(queue: queueName, autoAck: true, consumer: consumer);
+//consumer.ReceivedAsync += async (sender, ea) =>
+//{
+//    //The place that the message is received and processed
+//    //e.Body: the all arguments in message that is being processed
+//    //e.Body.Span or e.Body.ToArray(): the byte message that is being processed in
+//    byte[] body = ea.Body.ToArray();
+//    string message = System.Text.Encoding.UTF8.GetString(body);
+//    Console.WriteLine($"Received message: {message}");
+//};  
+
+//Console.Read();
+#endregion
+
+#region Fanout Exchange
+////Fanout exchange
+//await channel.ExchangeDeclareAsync(exchange: "fanout-example-exchange", type: ExchangeType.Fanout, durable: false, autoDelete: false, arguments: null);
+
+//Console.WriteLine("Enter the queue name: ");
+//string queueName = Console.ReadLine();
+//await channel.QueueDeclareAsync(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+//await channel.QueueBindAsync(queue: queueName, exchange: "fanout-example-exchange", routingKey: "");
+
+//AsyncEventingBasicConsumer consumer = new(channel); 
+//await channel.BasicConsumeAsync(queue: queueName, autoAck: true, consumer: consumer);
+//consumer.ReceivedAsync += async (sender, ea) =>
+//{
+//    //The place that the message is received and processed
+//    //e.Body: the all arguments in message that is being processed
+//    //e.Body.Span or e.Body.ToArray(): the byte message that is being processed in
+//    byte[] body = ea.Body.ToArray();
+//    string message = System.Text.Encoding.UTF8.GetString(body);
+//    Console.WriteLine($"Received message: {message}");
+//};
+#endregion
 
 Console.Read();
