@@ -83,4 +83,24 @@ using IChannel channel = await connection.CreateChannelAsync();
 //};
 #endregion
 
+#region TopicExchange
+
+await channel.ExchangeDeclareAsync(exchange: "topic-example-exchange", type: ExchangeType.Topic, durable: false, autoDelete: false, arguments: null);
+Console.Write("Please give topic format: ");
+string topic = Console.ReadLine();
+string queueName = (await channel.QueueDeclareAsync()).QueueName;
+await channel.QueueBindAsync(queue: queueName, exchange: "topic-example-exchange", routingKey: topic);
+
+AsyncEventingBasicConsumer consumer = new(channel);
+await channel.BasicConsumeAsync(queue: queueName, autoAck: true, consumer: consumer);
+consumer.ReceivedAsync += async (sender, ea) =>
+{
+    //The place that the message is received and processed
+    //e.Body: the all arguments in message that is being processed
+    //e.Body.Span or e.Body.ToArray(): the byte message that is being processed in
+    byte[] body = ea.Body.ToArray();
+    string message = System.Text.Encoding.UTF8.GetString(body);
+    Console.WriteLine($"Received message: {message}");
+};
+#endregion
 Console.Read();

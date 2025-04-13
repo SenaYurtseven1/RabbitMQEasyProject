@@ -53,4 +53,17 @@ using IChannel channel = await connection.CreateChannelAsync();
 //}
 #endregion
 
+#region TopicExchange
+
+await channel.ExchangeDeclareAsync(exchange: "topic-example-exchange", type: ExchangeType.Topic, durable: false, autoDelete: false, arguments: null);
+for (int i = 0; i < 100; i++)
+{
+    await Task.Delay(200);
+    byte[] message = Encoding.UTF8.GetBytes("Hello " + i);
+    Console.WriteLine("Enter topic : ");
+    string topic = Console.ReadLine();
+    await channel.BasicPublishAsync(exchange: "topic-example-exchange", routingKey: topic, body: message);
+}
+
+#endregion
 Console.Read();
